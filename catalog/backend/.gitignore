@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Env
+.env
+.env.*
+
+# Markdown docs
+*.md
+
+# Lambda packaging artifacts
+*.zip
