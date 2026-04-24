@@ -88,9 +88,30 @@ To run the Bee Voice Assistant on a physical iPhone/iPad:
 
 ---
 
-## Expected Outputs
-- **Catalog**: A DynamoDB record with `qc_status` (APPROVED/REJECTED), `confidence_score` (0-100), and factual `reasoning`.
-- **Assistant**: Real-time synthesized speech and tool execution summaries (e.g., "Looking up your store in New York...").
+### Voice Assistant Usage Examples (Bee)
+
+The assistant handles three tiers of complexity. Here are examples of what to ask and what to expect:
+
+#### Example 1: Order Status (Tier 1 - Local Tool)
+- **Input**: "Hey Bee, where is my order 12345?"
+- **Process**: Tier 0 Classifier identifies `get_order_detail`. LLM (Llama 3.2) calls the local `DatabaseManager`.
+- **Expected Output**: "I've found your order 12345! It is currently 'Shipped' and is expected to arrive tomorrow by 6 PM."
+
+#### Example 2: Store Information (Tier 1 - Local Tool)
+- **Input**: "Is there a Lenskart store in Mumbai?"
+- **Process**: LLM searches the local store database.
+- **Expected Output**: "Yes! We have a premium store at Bandra West, Mumbai. It's open until 9:00 PM today."
+
+#### Example 3: Complex Inquiry (Tier 2 - Gemini Cloud Escalation)
+- **Input**: "How do I clean my silver-plated frames without damaging the coating?"
+- **Process**: Tier 1 detects high-complexity technical advice. Escalates to Gemini.
+- **Expected Output**: "To protect your silver-plated frames, avoid harsh alcohol-based cleaners. Instead, use a pH-neutral lens spray and the microfiber cloth provided in your case..."
+
+---
+
+## 3. Expected Outputs (General)
+- **Catalog QA**: A DynamoDB record with `qc_status` (APPROVED/REJECTED), `confidence_score` (0-100), and factual `reasoning`.
+- **Voice Assistant**: Real-time synthesized speech and interactive UI cards showing tool results.
 
 ---
 
