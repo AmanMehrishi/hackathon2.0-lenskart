@@ -1,93 +1,84 @@
-# Hackathon2.0
+# Lenskart Hackathon 2.0 - Agentic Intelligence Workspace
 
+This repository houses two primary projects focused on enhancing e-commerce operations through Agentic AI:
 
+1.  **Catalog QA System**: A Parallel Multi-Agent system for automated eyewear quality assurance and SKU verification.
+2.  **Voice Assistant (Bee)**: A 3-Tiered Intelligence Voice Assistant running Llama 3.2 on-device with Gemini cloud orchestration.
 
-## Getting started
+---
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## 1. Catalog QA System (Updated)
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+### Approach: Parallel Multi-Agent Orchestration
+The Catalog QA system has evolved into a robust **QA Manager** pattern. It utilizes three concurrent specialized agents to audit submissions before a senior "Judge Agent" makes a final decision based on absolute truth (Master DB).
 
-## Add your files
-
-* [Create](https://docs.gitlab.com/user/project/repository/web_editor/#create-a-file) or [upload](https://docs.gitlab.com/user/project/repository/web_editor/#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
-
+#### Architecture
+```mermaid
+graph TD
+    A[Image Upload] --> B(Orchestrator Lambda)
+    B --> C[Visual Matcher - Golden Image VS QC]
+    B --> D[Condition Agent - Damage Detection]
+    B --> E[Semantic Agent - Metadata Audit]
+    C --> F((Senior QA Judge))
+    D --> F
+    E --> F
+    F --> G[DynamoDB Verdict]
 ```
-cd existing_repo
-git remote add origin https://gitlab.hackathon.lenskart.com/amogh.km/hackathon2.0.git
-git branch -M main
-git push -uf origin main
+
+### Specialized Agents
+- **Visual Matcher (Sonnet 3.5)**: Performs a dual-image comparison between the vendor's **QC Upload** and the **Golden Reference**. Detects structural SKU mismatches (wrong shape, color, material) and physical damage.
+- **Condition Agent (Rekognition)**: Leverages Amazon Rekognition to flag severe defects (bent frames, missing lenses) and image quality failures.
+- **Semantic Agent**: Audits product name, category, and price sanity through pure LLM reasoning.
+
+### Rejection Rules (Absolute)
+- **Rule 1 — Dual-Veto Damage**: REJECT if either Condition or Visual Matcher reports physical damage.
+- **Rule 2 — SKU Mismatch**: REJECT if the product is structurally a different item from the Golden Image.
+- **Rule 3 — Not Eyewear**: REJECT if the item does not belong to the eyewear category.
+
+### Setup & Run
+1. **Frontend (Next.js + Tailwind)**:
+   ```bash
+   cd catalog/frontend
+   npm install
+   npm run dev 
+   ```
+2. **Backend (Python Lambdas)**:
+   - Environment: `BEDROCK_SMART_MODEL` = Claude 3.5 Sonnet.
+   - S3 triggers the `upload_and_trigger` Lambda, which initiates the agentic `qc_pipeline`.
+
+---
+
+## 2. Voice Assistant App (Bee)
+
+### Approach: 3-Tiered Intelligence
+Bee maximizes on-device performance while maintaining cloud-level reasoning capabilities.
+
+- **Tier 0**: Local N-gram Intent Classifier (Fast logic).
+- **Tier 1 (Local LLM)**: Llama 3.2 3B Instruct (via MLX-Swift) for local tool calling (Order/Store DB).
+- **Tier 2 (Cloud)**: Gemini 1.5 Flash handles complex logic, escalation, and cloud-bound tool execution.
+
+### Architecture
+```mermaid
+graph LR
+    A[Voice] --> B[Classifier]
+    B -- High Conf --> C[MLX Llama 3.2]
+    B -- Low Conf --> D[Gemini Cloud]
+    C -- Tool JSON --> E[Swift local DB]
+    D -- Tool JSON --> F[Python Backend]
 ```
 
-## Integrate with your tools
+### Environment Variables
+- `GEMINI_API_KEY`: Required for Tier 2 escalation.
+- `AWS_REGION_NAME`: Target for Catalog Bedrock/Rekognition.
+- `DYNAMODB_TABLE`: `CatalogQCTable`.
 
-* [Set up project integrations](https://gitlab.hackathon.lenskart.com/amogh.km/hackathon2.0/-/settings/integrations)
+---
 
-## Collaborate with your team
+## Expected Outputs
+- **Catalog**: A DynamoDB record with `qc_status` (APPROVED/REJECTED), `confidence_score` (0-100), and factual `reasoning`.
+- **Assistant**: Real-time synthesized speech and tool execution summaries (e.g., "Looking up your store in New York...").
 
-* [Invite team members and collaborators](https://docs.gitlab.com/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/user/project/merge_requests/creating_merge_requests/)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/user/project/issues/managing_issues/#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+---
 
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/topics/autodevops/requirements/)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ci/environments/protected_environments/)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+## Authors
+- Lenskart AI Team - Hackathon 2.0
