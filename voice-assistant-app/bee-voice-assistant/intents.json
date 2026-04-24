@@ -1,0 +1,460 @@
+{
+  "intents": {
+    "check_order_status": {
+      "phrases": [
+        "check order status",
+        "order"
+      ],
+      "required_slots": [
+        "order_id"
+      ],
+      "escalate": false
+    },
+    "track_order": {
+      "phrases": [
+        "track order",
+        "order"
+      ],
+      "required_slots": [
+        "order_id"
+      ],
+      "escalate": false
+    },
+    "cancel_order": {
+      "phrases": [
+        "cancel order",
+        "order"
+      ],
+      "required_slots": [
+        "order_id"
+      ],
+      "escalate": false
+    },
+    "modify_order": {
+      "phrases": [
+        "modify order",
+        "order"
+      ],
+      "required_slots": [
+        "order_id"
+      ],
+      "escalate": false
+    },
+    "change_delivery_address": {
+      "phrases": [
+        "change delivery address"
+      ],
+      "required_slots": [
+        "order_id"
+      ],
+      "escalate": false
+    },
+    "change_delivery_slot": {
+      "phrases": [
+        "change delivery slot"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "order_not_received": {
+      "phrases": [
+        "order not received",
+        "order"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "order_delayed": {
+      "phrases": [
+        "order delayed",
+        "order"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "wrong_item_received": {
+      "phrases": [
+        "wrong item received"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "missing_items_in_order": {
+      "phrases": [
+        "missing items in order",
+        "order"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "payment_issue": {
+      "phrases": [
+        "payment issue"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "payment_failed": {
+      "phrases": [
+        "payment failed"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "refund_status": {
+      "phrases": [
+        "refund status"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "request_refund": {
+      "phrases": [
+        "request refund"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "billing_invoice_request": {
+      "phrases": [
+        "billing invoice request"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "apply_coupon": {
+      "phrases": [
+        "apply coupon"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "coupon_not_working": {
+      "phrases": [
+        "coupon not working"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "initiate_return": {
+      "phrases": [
+        "initiate return",
+        "return"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "return_policy_query": {
+      "phrases": [
+        "return policy query",
+        "return"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "exchange_request": {
+      "phrases": [
+        "exchange request"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "return_pickup_status": {
+      "phrases": [
+        "return pickup status",
+        "return"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "return_rejected": {
+      "phrases": [
+        "return rejected",
+        "return"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "product_search": {
+      "phrases": [
+        "product search"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "product_details": {
+      "phrases": [
+        "product details"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "frame_color_query": {
+      "phrases": [
+        "frame color query"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "frame_size_query": {
+      "phrases": [
+        "frame size query"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "lens_type_query": {
+      "phrases": [
+        "lens type query"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "price_query": {
+      "phrases": [
+        "price query"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "product_availability": {
+      "phrases": [
+        "product availability"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "recommend_products": {
+      "phrases": [
+        "recommend products"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "upload_prescription": {
+      "phrases": [
+        "upload prescription"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "prescription_status": {
+      "phrases": [
+        "prescription status"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "enter_prescription_manually": {
+      "phrases": [
+        "enter prescription manually"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "book_eye_test": {
+      "phrases": [
+        "book eye test"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "eye_test_info": {
+      "phrases": [
+        "eye test info"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "store_locator": {
+      "phrases": [
+        "store locator"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "store_hours": {
+      "phrases": [
+        "store hours"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "book_store_appointment": {
+      "phrases": [
+        "book store appointment"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "reschedule_appointment": {
+      "phrases": [
+        "reschedule appointment"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "cancel_appointment": {
+      "phrases": [
+        "cancel appointment"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "login_issue": {
+      "phrases": [
+        "login issue"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "update_profile": {
+      "phrases": [
+        "update profile"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "change_phone_email": {
+      "phrases": [
+        "change phone email"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "delete_account": {
+      "phrases": [
+        "delete account"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "delivery_partner_issue": {
+      "phrases": [
+        "delivery partner issue"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "installation_issue": {
+      "phrases": [
+        "installation issue"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "service_complaint": {
+      "phrases": [
+        "service complaint"
+      ],
+      "required_slots": [],
+      "escalate": true
+    },
+    "greeting": {
+      "phrases": [
+        "greeting"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "goodbye": {
+      "phrases": [
+        "goodbye"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "thank_you": {
+      "phrases": [
+        "thank you"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "speak_to_agent": {
+      "phrases": [
+        "speak to agent"
+      ],
+      "required_slots": [],
+      "escalate": true
+    },
+    "faq_general": {
+      "phrases": [
+        "faq general"
+      ],
+      "required_slots": [],
+      "escalate": false
+    },
+    "unknown": {
+      "phrases": [
+        "unknown"
+      ],
+      "required_slots": [],
+      "escalate": true
+    },
+    "out_of_scope": {
+      "phrases": [
+        "out of scope"
+      ],
+      "required_slots": [],
+      "escalate": true
+    }
+  },
+  "slots": {
+    "order_id": {
+      "method": "regex",
+      "pattern": "ORD-\\d{6,}"
+    },
+    "sku": {
+      "method": "regex",
+      "pattern": "LK-[A-Z0-9]{4,}"
+    },
+    "color": {
+      "method": "value_list",
+      "values": [
+        "black",
+        "matte_black",
+        "gold",
+        "silver",
+        "blue",
+        "red",
+        "brown"
+      ]
+    },
+    "frame_type": {
+      "method": "value_list",
+      "values": [
+        "aviator",
+        "round",
+        "wayfarer",
+        "cat_eye",
+        "rectangle",
+        "square"
+      ]
+    },
+    "city": {
+      "method": "value_list",
+      "values": [
+        "mumbai",
+        "delhi",
+        "bangalore",
+        "pune",
+        "chennai",
+        "hyderabad"
+      ]
+    },
+    "lens_type": {
+      "method": "value_list",
+      "values": [
+        "blue_light",
+        "progressive",
+        "bifocal",
+        "single_vision"
+      ]
+    },
+    "price_range": {
+      "method": "regex",
+      "pattern": "(?:under|below) (\\d+)"
+    }
+  }
+}
