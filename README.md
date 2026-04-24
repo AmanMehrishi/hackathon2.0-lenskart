@@ -81,4 +81,6 @@ graph LR
 ---
 
 ## Authors
-- Lenskart AI Team - Hackathon 2.0
+- Amogh KM
+- Aman Mehrishi
+- Anirudh Sharma
