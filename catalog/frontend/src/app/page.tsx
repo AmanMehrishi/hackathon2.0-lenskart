@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, type FormEvent } from "react";
-import { Upload, Loader2, ImagePlus, DollarSign, Tag, Package } from "lucide-react";
+import { Upload, Loader2, ImagePlus, Fingerprint, ScanLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,10 +13,7 @@ const UPLOAD_API_URL = process.env.NEXT_PUBLIC_UPLOAD_API_URL ?? "/api/upload";
 function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      resolve(result.split(",")[1]);
-    };
+    reader.onload = () => resolve((reader.result as string).split(",")[1]);
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
@@ -30,40 +27,30 @@ export default function UploadPage() {
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
-    const formData = new FormData(form);
+    const fd = new FormData(form);
 
-    const productName = formData.get("product_name") as string;
-    const proposedPrice = parseFloat(formData.get("proposed_price") as string);
-    const category = formData.get("category") as string;
-    const brand = formData.get("brand") as string;
-    const imageFile = formData.get("image") as File;
+    const product_id = (fd.get("product_id") as string).trim();
+    const proposed_price = parseFloat(fd.get("proposed_price") as string);
+    const imageFile = fd.get("qc_image") as File;
 
-    if (!productName || !proposedPrice || !imageFile?.size) {
-      showToast("Please fill in all required fields.", "error");
+    if (!product_id || !imageFile?.size) {
+      showToast("Please enter a Product ID and upload an image.", "error");
       return;
     }
 
     setLoading(true);
-
     try {
       const imageBase64 = await fileToBase64(imageFile);
-
-      const payload = {
-        image_base64: imageBase64,
-        content_type: imageFile.type || "image/jpeg",
-        product: {
-          product_name: productName,
-          proposed_price: proposedPrice,
-          category,
-          brand,
-          attributes: {},
-        },
-      };
 
       const res = await fetch(UPLOAD_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          image_base64: imageBase64,
+          content_type: imageFile.type || "image/jpeg",
+          product_id,
+          proposed_price: isNaN(proposed_price) ? 0 : proposed_price,
+        }),
       });
 
       if (!res.ok) {
@@ -72,7 +59,7 @@ export default function UploadPage() {
       }
 
       const data = await res.json();
-      showToast(`Product submitted! SKU: ${data.sku_id}. AI QC is evaluating.`, "success");
+      showToast(`QC submitted! Upload ID: ${data.sku_id}. AI pipeline running.`, "success");
       form.reset();
       setPreview(null);
     } catch (err) {
@@ -82,139 +69,80 @@ export default function UploadPage() {
     }
   }
 
-  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreview(url);
-    } else {
-      setPreview(null);
-    }
-  }
-
   return (
     <main className="flex-1 p-6 md:p-10">
       <div className="mx-auto max-w-2xl">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">Upload Product</h1>
+          <h1 className="text-3xl font-bold tracking-tight">QC Upload</h1>
           <p className="mt-2 text-zinc-500 dark:text-zinc-400">
-            Submit a new product for AI-powered Quality Control evaluation.
+            Submit a product image for AI quality control. Metadata is pulled from the Golden Record automatically.
           </p>
         </div>
 
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Package className="h-5 w-5" />
-              Product Details
+              <ScanLine className="h-5 w-5" />
+              Quality Check Submission
             </CardTitle>
             <CardDescription>
-              Fill in the product metadata and upload an image. Our multi-agent AI pipeline
-              will evaluate image quality, pricing, and catalog accuracy.
+              Enter the registered Product ID and upload the vendor&apos;s QC image.
+              The pipeline will compare it against the master golden record.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Product Name */}
               <div className="space-y-2">
-                <Label htmlFor="product_name">
-                  Product Name <span className="text-red-500">*</span>
+                <Label htmlFor="product_id">
+                  Product ID <span className="text-red-500">*</span>
                 </Label>
                 <div className="relative">
-                  <Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+                  <Fingerprint className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
                   <Input
-                    id="product_name"
-                    name="product_name"
-                    placeholder="Lenskart Air"
-                    className="pl-10"
-                    required
+                    id="product_id" name="product_id"
+                    placeholder="LK-AIR-5001"
+                    className="pl-10" required
                   />
                 </div>
+                <p className="text-xs text-zinc-400">Must match a registered golden record.</p>
               </div>
 
-              {/* Price + Category row */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="proposed_price">
-                    Proposed Price <span className="text-red-500">*</span>
-                  </Label>
-                  <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
-                    <Input
-                      id="proposed_price"
-                      name="proposed_price"
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      placeholder="89.99"
-                      className="pl-10"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="category">Category</Label>
-                  <Input
-                    id="category"
-                    name="category"
-                    placeholder="Rectangular Rimmed Glasses"
-                  />
-                </div>
-              </div>
-
-              {/* Brand */}
               <div className="space-y-2">
-                <Label htmlFor="brand">Brand</Label>
-                <Input id="brand" name="brand" placeholder="Lenskart" />
+                <Label htmlFor="proposed_price">Proposed Price ($)</Label>
+                <Input
+                  id="proposed_price" name="proposed_price"
+                  type="number" step="0.01" min="0"
+                  placeholder="149.00"
+                />
+                <p className="text-xs text-zinc-400">Vendor&apos;s listed price. Compared against master expected price.</p>
               </div>
 
-              {/* Image Upload */}
               <div className="space-y-2">
-                <Label>
-                  Product Image <span className="text-red-500">*</span>
-                </Label>
+                <Label>QC Image <span className="text-red-500">*</span></Label>
                 <div
                   onClick={() => fileRef.current?.click()}
                   className="group relative flex min-h-[200px] cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-zinc-300 bg-zinc-50 transition-colors hover:border-zinc-400 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:border-zinc-600"
                 >
                   {preview ? (
-                    <img
-                      src={preview}
-                      alt="Preview"
-                      className="max-h-[300px] rounded-lg object-contain p-4"
-                    />
+                    <img src={preview} alt="Preview" className="max-h-[300px] rounded-lg object-contain p-4" />
                   ) : (
                     <div className="flex flex-col items-center gap-2 text-zinc-400">
                       <ImagePlus className="h-10 w-10" />
-                      <span className="text-sm font-medium">Click to upload an image</span>
-                      <span className="text-xs">JPEG, PNG, WebP supported</span>
+                      <span className="text-sm font-medium">Upload the vendor&apos;s product image</span>
+                      <span className="text-xs">JPEG, PNG, WebP</span>
                     </div>
                   )}
                   <input
-                    ref={fileRef}
-                    type="file"
-                    name="image"
-                    accept="image/jpeg,image/png,image/webp"
-                    className="hidden"
-                    onChange={handleImageChange}
+                    ref={fileRef} type="file" name="qc_image"
+                    accept="image/jpeg,image/png,image/webp" className="hidden"
+                    onChange={(e) => { const f = e.target.files?.[0]; setPreview(f ? URL.createObjectURL(f) : null); }}
                     required
                   />
                 </div>
               </div>
 
-              {/* Submit */}
               <Button type="submit" className="w-full" size="lg" disabled={loading}>
-                {loading ? (
-                  <>
-                    <Loader2 className="animate-spin" />
-                    Uploading &amp; Triggering QC Pipeline...
-                  </>
-                ) : (
-                  <>
-                    <Upload />
-                    Submit for AI Quality Control
-                  </>
-                )}
+                {loading ? <><Loader2 className="animate-spin" /> Running AI QC Pipeline...</> : <><Upload /> Submit for QC</>}
               </Button>
             </form>
           </CardContent>

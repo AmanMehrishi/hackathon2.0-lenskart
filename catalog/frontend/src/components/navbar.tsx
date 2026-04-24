@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Upload, ShieldCheck, Package2 } from "lucide-react";
+import { Upload, ShieldCheck, Package2, Database } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -29,8 +29,9 @@ export function Navbar() {
   }, []);
 
   const links = [
-    { href: "/", label: "Upload Product", icon: Upload },
-    { href: "/review", label: "QC Dashboard", icon: ShieldCheck, badge: flaggedCount },
+    { href: "/register", label: "Register", icon: Database },
+    { href: "/", label: "QC Upload", icon: Upload },
+    { href: "/review", label: "Dashboard", icon: ShieldCheck, badge: flaggedCount },
   ];
 
   return (
