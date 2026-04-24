@@ -7,7 +7,7 @@ This repository houses two primary projects focused on enhancing e-commerce oper
 
 ---
 
-## 1. Catalog QA System (Updated)
+## 1. Catalog QA System
 
 ### Approach: Parallel Multi-Agent Orchestration
 The Catalog QA system has evolved into a robust **QA Manager** pattern. It utilizes three concurrent specialized agents to audit submissions before a senior "Judge Agent" makes a final decision based on absolute truth (Master DB).
@@ -30,7 +30,7 @@ graph TD
 - **Condition Agent (Rekognition)**: Leverages Amazon Rekognition to flag severe defects (bent frames, missing lenses) and image quality failures.
 - **Semantic Agent**: Audits product name, category, and price sanity through pure LLM reasoning.
 
-### Rejection Rules (Absolute)
+### Rejection Rules
 - **Rule 1 — Dual-Veto Damage**: REJECT if either Condition or Visual Matcher reports physical damage.
 - **Rule 2 — SKU Mismatch**: REJECT if the product is structurally a different item from the Golden Image.
 - **Rule 3 — Not Eyewear**: REJECT if the item does not belong to the eyewear category.
