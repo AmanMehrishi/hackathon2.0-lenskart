@@ -67,6 +67,20 @@ graph LR
     D -- Tool JSON --> F[Python Backend]
 ```
 
+### Setup & Run (iOS App)
+To run the Bee Voice Assistant on a physical iPhone/iPad:
+
+1. **Xcode Packages**: 
+   - Add `https://github.com/ml-explore/mlx-swift`
+   - Add `https://github.com/ml-explore/mlx-swift-lm`
+2. **Download Model**: Download the **Llama-3.2-3B-Instruct-4bit** MLX weights.
+3. **Attach to Bundle**:
+   - Drag the model folder into Xcode.
+   - Select **"Copy items if needed"** and **"Create groups"**.
+   - **Crucial**: Ensure the app target is checked in "Target Membership".
+   - Verify it appears in **Build Phases > Copy Bundle Resources**.
+4. **Deploy**: Select your physical iPhone and press `Cmd + R`.
+
 ### Environment Variables
 - `GEMINI_API_KEY`: Required for Tier 2 escalation.
 - `AWS_REGION_NAME`: Target for Catalog Bedrock/Rekognition.
